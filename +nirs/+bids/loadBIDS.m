@@ -42,10 +42,7 @@ json_files=rdir(fullfile(folder,'**','*.json'));
 [~,id]=sort(cellfun(@(x)length(x),{json_files.folder}));
 json_files=json_files(id);
 
-
-
-
-for i=1:length(json_files);
+for i=1:length(json_files)
     
     if(verbose)
         disp(['applying JSON file: ' json_files(i).name]);
@@ -163,4 +160,37 @@ for i=1:length(json_files);
 
     
     
-end;
+end
+
+end
+
+% Add session from BIDS structure to metadata
+function data = add_bids_session(data, nirs_folder, verbose)
+
+% make sure we haven't already added a session
+if iskey(data.demographics, 'session')
+    return
+end
+
+% remove trailing file separator
+if nirs_folder(end) == filesep
+    nirs_folder = nirs_folder(1:end-1);
+end
+
+% validate folder name is according to BIDS spec
+folder_parts = strsplit(nirs_folder, filesep);
+session_folder = folder_parts{end-1};
+if ~startsWith(session_folder, 'ses-')
+    if(verbose)
+        disp(['Session folder does not look like BIDS format: ', session_folder]);
+    end
+    return
+end
+
+% grab session name
+session = extractAfter(session_folder, 'ses-');
+
+% add to demographics
+data.demographics('session') = session;
+
+end

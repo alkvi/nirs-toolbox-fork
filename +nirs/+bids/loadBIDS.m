@@ -11,30 +11,15 @@ snirf_files = rdir(fullfile(folder,'**','*.snirf'));
 if(verbose)
     disp([num2str(length(snirf_files)) ' files found']);
 end
+
+% Load each snirf file
 for i=1:length(snirf_files)
     if(verbose)
         disp(['Loading ' snirf_files(i).name]);
     end
     try
-        data(i,1)=nirs.io.loadSNIRF(snirf_files(i).name,verbose,false);
-        try
-            name=strrep(snirf_files(i).name,folder,'');
-            parts=strsplit(name,filesep);
-            subj=parts{min(find(contains(parts,'sub-')))};
-            sess=parts{min(find(contains(parts,'ses-')))};
-
-            subjNamesAlias={'subject','subjid','id','subjectid','subjid','participant_id'};
-            sfound=find(ismember(lower(data(i).demographics.keys),lower(subjNamesAlias)));
-            if(~isempty(sfound))
-                nameAlias=data(i).demographics.keys{min(sfound)};
-            else
-                nameAlias='subjid';
-            end
-            data(i,1).demographics(nameAlias)=subj;
-            data(i,1).demographics('session')=sess;
-            data(i,1).demographics('filename')=name;
-        end
-
+        data(i,1)=nirs.io.loadSNIRF(snirf_files(i).name);
+        data(i,1)=add_bids_session(data(i,1), snirf_files(i).folder, verbose);
     catch
         warning(['failed to load: ' snirf_files(i).name]);
     end
@@ -47,11 +32,8 @@ json_files=rdir(fullfile(folder,'**','*.json'));
 [~,id]=sort(cellfun(@(x)length(x),{json_files.folder}));
 json_files=json_files(id);
 
-
-
-
-for i=1:length(json_files);
-
+for i=1:length(json_files)
+    
     if(verbose)
         disp(['applying JSON file: ' json_files(i).name]);
     end
@@ -195,8 +177,39 @@ for i=1:length(json_files);
         warning('Unable to parse %s, this json format may not be specifically supported by NIRS toolbox at this time',json_files(i).name);
     end
 
+    
+    
+end
 
+end
 
-end;
+% Add session from BIDS structure to metadata
+function data = add_bids_session(data, nirs_folder, verbose)
 
-data=nirs.util.clean_up_demographics(data);
+% make sure we haven't already added a session
+if iskey(data.demographics, 'session')
+    return
+end
+
+% remove trailing file separator
+if nirs_folder(end) == filesep
+    nirs_folder = nirs_folder(1:end-1);
+end
+
+% validate folder name is according to BIDS spec
+folder_parts = strsplit(nirs_folder, filesep);
+session_folder = folder_parts{end-1};
+if ~startsWith(session_folder, 'ses-')
+    if(verbose)
+        disp(['Session folder does not look like BIDS format: ', session_folder]);
+    end
+    return
+end
+
+% grab session name
+session = extractAfter(session_folder, 'ses-');
+
+% add to demographics
+data.demographics('session') = session;
+
+end

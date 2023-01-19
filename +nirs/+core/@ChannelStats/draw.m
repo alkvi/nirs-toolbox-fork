@@ -101,7 +101,7 @@ end
 
 
 % colormap
-[~,cmap] = evalc('flipud( cbrewer(''div'',''RdBu'',128) )');
+[~,cmap] = evalc('flipud( cbrewer(''div'',''RdBu'',128, ''linear'') )');
 z = linspace(vrange(1), vrange(2), size(cmap,1))';
 
 hind = 0;

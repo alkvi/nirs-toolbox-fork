@@ -11,7 +11,7 @@ if(nargin<4)
 end
 
 [p,filename,e]=fileparts(filename);
-filename=fullfile(p,[filename '.snirf']);
+filename=fullfile(p,[filename + '.snirf']);
 
 %the creator has trouble with the unix "~" notation
 if(isunix & strcmp(filename(1),'~'))

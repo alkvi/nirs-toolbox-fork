@@ -37,6 +37,12 @@ classdef ChangeStimulusInfo < nirs.modules.AbstractModule
            for idx=1:height(newstiminfo)
                fileIdx=newstiminfo.FileIdx(idx);
                
+               % FIX: if single data with single stim
+               % then do not exceed index by using fileIdx
+               if size(newstiminfo,1) == 1 && size(data,1) == 1
+                  fileIdx = 1; 
+               end
+               
                 for idx2=1:length(VarNames)
                     stim = data(fileIdx).stimulus(VarNames{idx2});
                     newstim=newstiminfo.(VarNames{idx2})(idx);

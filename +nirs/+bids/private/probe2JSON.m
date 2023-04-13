@@ -21,8 +21,8 @@ link=struct2table(ll);
 
 if(strcmp(class(probe),'nirs.core.Probe1020'))
     
-    
-    writetable(link,[filename2 '_channels.tsv'],'FileType','text','Delimiter','\t');
+    link=probe.link;
+    writetable(link,[filename + '_channels.tsv'],'FileType','text','Delimiter','\t');
     
     optodes=probe.optodes;
     optodes.name=optodes.Name; optodes.Name=[];
@@ -63,7 +63,7 @@ if(strcmp(class(probe),'nirs.core.Probe1020'))
     mesh=probe.getmesh;
     fidc=mesh(1).fiducials;
     
-    fid=fopen([filename '_coordsystem.json'],'w');
+    fid=fopen([filename + '_coordsystem.json'],'w');
     
     fprintf(fid,'{\n');
     fprintf(fid,'\t"NIRSCoordinateSystem": "%s",\n','MNI');
@@ -92,7 +92,7 @@ elseif(strcmp(class(probe),'eeg.core.Probe'))
     electrodes.status=repmat({'unknown'},height(electrodes),1);
     electrodes.status_description=repmat({' '},height(electrodes),1);
     
-    writetable(electrodes,[filename '_channels.tsv'],'FileType','text','Delimiter','\t');   
+    writetable(electrodes,[filename + '_channels.tsv'],'FileType','text','Delimiter','\t');   
     
     
     electrodes=probe.electrodes;
@@ -100,7 +100,7 @@ elseif(strcmp(class(probe),'eeg.core.Probe'))
     electrodes.y=electrodes.Y; electrodes.Y=[];
     electrodes.z=electrodes.Z; electrodes.Z=[];
     electrodes.units=electrodes.Units; electrodes.Units=[];
-    writetable(electrodes,[filename '_electrodes.tsv'],'FileType','text','Delimiter','\t');
+    writetable(electrodes,[filename + '_electrodes.tsv'],'FileType','text','Delimiter','\t');
     
    
 else

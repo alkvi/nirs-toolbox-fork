@@ -50,5 +50,5 @@ s.onset=strtrim(cellstr(num2str(s.onset)));
 s.duration=strtrim(cellstr(num2str(s.duration)));
 s.amplitude=strtrim(cellstr(num2str(s.amplitude)));
 
-writetable(s,[filename(1:strfind(filename,'.json')-1) '.tsv'],...
+writetable(s,[extractBefore(filename, '.json') + '.tsv'],...
     'FileType','text','Delimiter','\t');

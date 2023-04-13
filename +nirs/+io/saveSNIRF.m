@@ -11,7 +11,7 @@ if(nargin<4)
 end
 
 [p,filename,e]=fileparts(filename);
-filename=fullfile(p,[filename '.snirf']);
+filename=fullfile(p,[filename + '.snirf']);
 
 snirf=nirs.util.NirsCoreData2SNIRF(data);
 snirf.Save(filename);

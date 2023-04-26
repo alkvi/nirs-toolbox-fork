@@ -26,12 +26,12 @@ end
 if(~iscellstr(stimname))
     stimname={stimname};
 end
-if(length(duration)<length(stimname{1}))
-    duration=duration(1)*ones(length(stimname{1}),1);
+if(length(duration)<length(stimname))
+    duration=duration(1)*ones(length(stimname),1);
 end
-for i=1:length(stimname{1})
-    if(iskey(data.stimulus,stimname{1}{i}))
-        data.stimulus.(stimname{1}{i}).dur(:)=duration(i);
+for i=1:length(stimname)
+    if(iskey(data.stimulus,stimname{i}))
+        data.stimulus.(stimname{i}).dur(:)=duration(i);
     end
     
 end

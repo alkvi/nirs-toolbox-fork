@@ -1,8 +1,10 @@
 function [info,tbl]=load_BIDS_JSON(filename)
 
-rootname=strtok(filename,'.');
-jsonfile=[rootname '.json'];
-tsvfile=[rootname '.tsv'];
+%rootname=strtok(filename,'.');
+[filepath,name,ext] = fileparts(filename);
+rootname = strcat(filepath, "/", name);
+jsonfile=strcat(rootname, ".json");
+tsvfile=strcat(rootname, ".tsv");
 
 info=textread(jsonfile,'%s');
 

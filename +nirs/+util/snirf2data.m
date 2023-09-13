@@ -1,4 +1,10 @@
-function data=snirf2data(snirf)
+function data=snirf2data(snirf, probe)
+
+if(nargin<2)
+    custom_probe=false;
+else
+    custom_probe=true;
+end
 
 dataTypeDefs{1,1}=1;
 dataTypeDefs{1,2}='raw';
@@ -26,8 +32,10 @@ for i=1:length(snirf.nirs)
             tmpdata(ii).data=tmpdata(ii).data';
         end
 
-
-        if(isfield(snirf.nirs(i).probe,'sourcePos3D'))
+        
+        if(custom_probe)
+            tmpdata(ii).probe=probe;
+        elseif(isfield(snirf.nirs(i).probe,'sourcePos3D'))
             tmpdata(ii).probe=nirs.core.Probe1020;
         else
             tmpdata(ii).probe=nirs.core.Probe;
@@ -303,12 +311,14 @@ for i=1:length(snirf.nirs)
             tbl.Z(lst)=tbl.Z(lst)*10;
             tbl.Units=repmat({'mm'},height(tbl),1);
 
-
-
-            mesh=tmpdata(ii).probe.getmesh;
-            Tform=nirs.registration.cp2tform(tbl,mesh(1).fiducials);
-            tbl=nirs.registration.applytform(tbl,Tform);
-            tmpdata(ii).probe.optodes_registered=tbl;
+            if(custom_probe)
+                tmpdata(ii).probe.optodes_registered=tbl;
+            else
+                mesh=tmpdata(ii).probe.getmesh;
+                Tform=nirs.registration.cp2tform(tbl,mesh(1).fiducials);
+                tbl=nirs.registration.applytform(tbl,Tform);
+                tmpdata(ii).probe.optodes_registered=tbl;
+            end
         end
 
         fds=fields(snirf.nirs(i).metaDataTags);

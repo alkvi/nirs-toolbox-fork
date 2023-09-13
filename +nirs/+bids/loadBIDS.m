@@ -1,4 +1,4 @@
-function data = loadBIDS(folder,verbose)
+function data = loadBIDS(folder,verbose,probe)
 
 if(nargin<2)
     verbose=true;
@@ -7,6 +7,14 @@ end
 if(verbose)
     disp('Searching directory for SNIRF files');
 end
+if(nargin<3)
+    custom_probe=false;
+else
+    custom_probe=true;
+end
+
+
+% Get a list of every snirf  file
 snirf_files = rdir(fullfile(folder,'**','*.snirf'));
 if(verbose)
     disp([num2str(length(snirf_files)) ' files found']);
@@ -16,7 +24,12 @@ for i=1:length(snirf_files)
         disp(['Loading ' snirf_files(i).name]);
     end
     try
-        data(i,1)=nirs.io.loadSNIRF(snirf_files(i).name);
+        if custom_probe
+            data(i,1)=nirs.io.loadSNIRF(snirf_files(i).name, probe);
+        else
+            data(i,1)=nirs.io.loadSNIRF(snirf_files(i).name);
+        end
+        data(i,1)=add_bids_session(data(i,1), snirf_files(i).folder, verbose);
     catch
         warning(['failed to load: ' snirf_files(i).name]);
     end

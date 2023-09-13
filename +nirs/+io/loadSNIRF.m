@@ -1,12 +1,10 @@
-function data = loadSNIRF(filename,verbose)
+function data = loadSNIRF(filename, probe)
 % this function reads in a nir5 (hdf5) formated data file
 
 if(nargin<2)
-    verbose=true;
-end
-
-if(verbose)
-    disp(['Loading SNIRF file: ' filename]);
+    custom_probe=false;
+else
+    custom_probe=true;
 end
 
 info=hdf5info(filename);
@@ -39,7 +37,12 @@ end
 
 snirf = array2struct(array);
 
-data = nirs.util.snirf2data(snirf);
+if custom_probe
+    data = nirs.util.snirf2data(snirf,probe);
+else
+    data = nirs.util.snirf2data(snirf);
+end
+
 for i=1:length(data)
     data(i).description=filename;
 end

@@ -9,8 +9,13 @@ if(verbose)
     disp(['Loading SNIRF file: ' filename]);
 end
 
-info=hdf5info(filename);
+if(nargin<2)
+    custom_probe=false;
+else
+    custom_probe=true;
+end
 
+info=hdf5info(filename);
 
 names=nirs.util.hdf5getnames(filename);
 
@@ -39,7 +44,12 @@ end
 
 snirf = array2struct(array);
 
-data = nirs.util.snirf2data(snirf);
+if custom_probe
+    data = nirs.util.snirf2data(snirf,probe);
+else
+    data = nirs.util.snirf2data(snirf);
+end
+
 for i=1:length(data)
     data(i).description=filename;
 end

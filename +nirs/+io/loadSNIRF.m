@@ -1,4 +1,4 @@
-function data = loadSNIRF(filename,verbose,legacy)
+function data = loadSNIRF(filename,verbose,legacy,probe)
 % this function reads in a nir5 (hdf5) formated data file
 
 if(nargin<2 || isempty(verbose))
@@ -7,6 +7,12 @@ end
 
 if(nargin<3)
     legacy=true;
+end
+
+if(nargin<4)
+    custom_probe=false;
+else
+    custom_probe=true;
 end
 
 if(verbose)
@@ -18,10 +24,7 @@ if(~legacy)
     return
 end
 
-
-
 info=hdf5info(filename);
-
 
 names=nirs.util.hdf5getnames(filename);
 
@@ -50,7 +53,12 @@ end
 
 snirf = array2struct(array);
 
-data = nirs.util.snirf2data(snirf);
+if custom_probe
+    data = nirs.util.snirf2data(snirf,probe);
+else
+    data = nirs.util.snirf2data(snirf);
+end
+
 for i=1:length(data)
     data(i).description=filename;
 end

@@ -1,4 +1,10 @@
-function data=snirf2data(snirf)
+function data=snirf2data(snirf, probe)
+
+if(nargin<2)
+    custom_probe=false;
+else
+    custom_probe=true;
+end
 
 dataTypeDefs{1,1}=1;
 dataTypeDefs{1,2}='raw';
@@ -26,9 +32,11 @@ for i=1:length(snirf.nirs)
             tmpdata(ii).data=tmpdata(ii).data';
         end
 
-
-        if(isfield(snirf.nirs(i).probe,'sourcePos3D'))
-           tmpdata(ii).probe=nirs.core.Probe1020;
+        
+        if(custom_probe)
+            tmpdata(ii).probe=probe;
+        elseif(isfield(snirf.nirs(i).probe,'sourcePos3D'))
+            tmpdata(ii).probe=nirs.core.Probe1020;
         else
             tmpdata(ii).probe=nirs.core.Probe;
         end
@@ -333,26 +341,13 @@ for i=1:length(snirf.nirs)
             tbl.Z(lst)=tbl.Z(lst)*10;
             tbl.Units=repmat({'mm'},height(tbl),1);
 
-
-
-            if(isa(tmpdata(ii).probe,'nirs.core.Probe1020'))
-                % this only sets all the registered points to 0
+            if(custom_probe)
+                tmpdata(ii).probe.optodes_registered=tbl;
+            else
                 mesh=tmpdata(ii).probe.getmesh;
                 Tform=nirs.registration.cp2tform(tbl,mesh(1).fiducials);
                 tbl=nirs.registration.applytform(tbl,Tform);
                 tmpdata(ii).probe.optodes_registered=tbl;
-            else
-                % store converted positions
-                srcTable=tbl(strcmp(tbl.Type,'Source'),:);
-                detTable=tbl(strcmp(tbl.Type,'Detector'),:);
-
-                srcArr = [srcTable.X,srcTable.Y,srcTable.Z];
-                detArr = [detTable.X,detTable.Y,detTable.Z];
-
-
-                tmpdata(ii).probe.optodes=tbl;
-                %tmpdata(ii).probe.srcPos =srcArr;
-                %tmpdata(ii).probe.detPos= detArr;
             end
         end
 

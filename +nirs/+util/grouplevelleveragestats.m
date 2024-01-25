@@ -45,11 +45,19 @@ for i = 1:length(S)
     
     % whitening transform
     
-    [u, s, ~] = svd(S(i).covb, 'econ');
+    %[u, s, ~] = svd(S(i).covb, 'econ');
+    lstValid=~isnan(S(i).tstat);
+    [u, s, ~] = svd(S(i).covb(lstValid,lstValid), 'econ');
     %W = blkdiag(W, diag(1./diag(sqrt(s))) * u');
-    W = blkdiag(W, pinv(s).^.5 * u');
+    %W = blkdiag(W, pinv(s).^.5 * u');
+    %iW = blkdiag(iW, u*sqrt(s) );
     
-    iW = blkdiag(iW, u*sqrt(s) );
+    w=nan(size(S(i).covb));
+    w(lstValid,lstValid)=pinv(s).^.5 * u';
+    W = blkdiag(W, w);
+    iw=nan(size(S(i).covb));
+    iw(lstValid,lstValid)=u*sqrt(s);
+    iW = blkdiag(iW, iw );
     
     
     %                L = chol(S(i).covb,'upper');

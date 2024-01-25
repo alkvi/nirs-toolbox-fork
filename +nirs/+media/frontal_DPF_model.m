@@ -25,6 +25,11 @@ if(nargin<2)
     Age=21;
 end
 
+% Age can still be an empty string in some cases.
+if isempty(Age)
+    Age = 21;
+end
+
 
 alpha=223.3;
 beta=0.05624;

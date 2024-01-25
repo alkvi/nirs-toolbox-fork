@@ -6,8 +6,8 @@ classdef BeerLambertLaw < nirs.modules.AbstractModule
     %
 
     properties
-        PPF = 5 / 50;   % partial pathlength factor
-        % PPF = @(lambda,data)nirs.media.frontal_DPF_model(lambda,data,'age');
+        %PPF = 5 / 50;   % partial pathlength factor 
+        PPF = @(lambda,data)nirs.media.frontal_DPF_model(lambda,data,'age') / 50;
     end
 
     methods

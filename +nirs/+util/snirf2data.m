@@ -115,6 +115,15 @@ for i=1:length(snirf.nirs)
 
                 if(~isfield(snirf.nirs(i).probe,posField))
                     snirf.nirs(i).probe.(posField)= snirf.nirs(i).probe.(pos3DField);
+                    
+                    % TEMP FIX for NIRx SNIRF files, with 4 columns in 
+                    % landmarkPos3D.
+                    if strcmp(posField, "landmarkPos")
+                        tmp3dfield = snirf.nirs(i).probe.(posField);
+                        tmp3dfield = tmp3dfield(1:3,:);
+                        snirf.nirs(i).probe.(posField) = tmp3dfield';
+                        snirf.nirs(i).probe.(pos3DField) = tmp3dfield';
+                    end
 
                     if(~isfield(snirf.nirs(i).probe,pos2DField))
                         %This will hit if only the 3D field is provided.
@@ -132,6 +141,9 @@ for i=1:length(snirf.nirs)
                             end
                         end
                         pts=snirf.nirs(i).probe.(pos3DField);
+                        if(size(pts,2)~=3)
+                            pts=pts';
+                        end
                         r = -2.4;
                         R=mean(sqrt(sum(pts.^2,2)));
                         x=-r*R.*(pts(:,1)./abs(pts(:,3)-r*R));
@@ -211,7 +223,7 @@ for i=1:length(snirf.nirs)
 
             if(~isfield(snirf.nirs(i).probe,posLabelField)&&~strcmp(posType,'landmark'))
                 for j=1:n
-                    snirf.nirs(i).probe.(posLabelField){j}=[posCapital+'-' num2str(j)];
+                    snirf.nirs(i).probe.(posLabelField){j}=[posCapital '-' num2str(j)];
                 end
             elseif(isfield(snirf.nirs(i).probe,posLabelField)&&~strcmp(posType,'landmark'))
                 snirf.nirs(i).probe.(posOrigLabelField)=snirf.nirs(i).probe.(posLabelField);

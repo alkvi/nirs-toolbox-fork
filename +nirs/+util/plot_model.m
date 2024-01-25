@@ -58,11 +58,14 @@ switch class(stats)
             fig = figure('Renderer','painters');
             ax = axes(fig);
             hold(ax,'on');
-            for z = 1:length(xdata)
-                ind = worder(z);
-                if weights(ind)<=0, continue; end
-                scatter( ax , xdata(ind) , ydata(ind) , weights(ind) , 'MarkerEdgeColor',[0 0 0],'MarkerFaceColor',[.75 .75 .75],'LineWidth',1,'MarkerFaceAlpha',.5);
-            end
+            % This takes forever with long data, so just include downweighted in the plot
+            % also
+%             for z = 1:length(xdata)
+%                 ind = worder(z);
+%                 if weights(ind)<=0, continue; end
+%                 scatter( ax , xdata(ind) , ydata(ind) , weights(ind) , 'MarkerEdgeColor',[0 0 0],'MarkerFaceColor',[.75 .75 .75],'LineWidth',1,'MarkerFaceAlpha',.5);
+%             end
+            scatter( ax , xdata , ydata , weights , 'MarkerEdgeColor',[0 0 0],'MarkerFaceColor',[.75 .75 .75],'LineWidth',1,'MarkerFaceAlpha',.5);
             figxlim = get( ax , 'xlim' );
             hold(ax,'on');
             plot( xpts , ypred , '-k' , 'LineWidth' , 1.5 );

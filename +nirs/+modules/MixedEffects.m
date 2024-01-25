@@ -318,7 +318,7 @@ classdef MixedEffects < nirs.modules.AbstractModule
             [Coef,bHat,CovB,LL,w] = nirs.math.fitlme(X(:,lstKeep),beta,Z,obj.robust,false,obj.verbose);
             % this gives the same results as the built in matlab code,
             % however, mine is MUCH faster (at N=22; mine=18s vs matlab=>160s 
-            % lme2=fitlmematrix(X(:,lstKeep),beta,Z,[],'dummyVarCoding',obj.dummyCoding, 'FitMethod', 'ML', 'CovariancePattern', repmat({'Isotropic'},nRE,1));
+            % lme2=fitlmematrix(full(X(:,lstKeep)),beta,Z,[],'dummyVarCoding',obj.dummyCoding, 'FitMethod', 'ML', 'CovariancePattern', repmat({'Isotropic'},nRE,1));
             [ii,jj]=find(isnan(X(:,lstKeep)));
             ii=unique(ii);
             w2=w; w2(ii)=[]; X2=X(:,lstKeep); X2(ii,:)=[];

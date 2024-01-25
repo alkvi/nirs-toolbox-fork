@@ -118,6 +118,15 @@ for i=1:length(snirf.nirs)
 
                 if(~isfield(snirf.nirs(i).probe,posField))
                     snirf.nirs(i).probe.(posField)= snirf.nirs(i).probe.(pos3DField);
+                    
+                    % TEMP FIX for NIRx SNIRF files, with 4 columns in 
+                    % landmarkPos3D.
+                    if strcmp(posField, "landmarkPos")
+                        tmp3dfield = snirf.nirs(i).probe.(posField);
+                        tmp3dfield = tmp3dfield(1:3,:);
+                        snirf.nirs(i).probe.(posField) = tmp3dfield';
+                        snirf.nirs(i).probe.(pos3DField) = tmp3dfield';
+                    end
 
                     
                     if(~isfield(snirf.nirs(i).probe,pos2DField))
@@ -141,14 +150,9 @@ for i=1:length(snirf.nirs)
                         end
 
                         pts=snirf.nirs(i).probe.(pos3DField);
-
-                        if(size(pts,2)~=3 & size(pts,2)~=4)
+                        if(size(pts,2)~=3)
                             pts=pts';
                         end
-                        if(size(pts,2)==4)
-                            pts=pts(:,1:3);
-                        end
-
                         r = -2.4;
                         R=mean(sqrt(sum(pts.^2,2)));
                         x=-r*R.*(pts(:,1)./abs(pts(:,3)-r*R));

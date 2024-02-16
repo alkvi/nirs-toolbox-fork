@@ -121,7 +121,7 @@ for i=1:length(snirf.nirs)
                     
                     % TEMP FIX for NIRx SNIRF files, with 4 columns in 
                     % landmarkPos3D.
-                    if strcmp(posField, "landmarkPos")
+                    if strcmp(posField, "landmarkPos") && size(snirf.nirs(i).probe.(posField),1) == 4
                         tmp3dfield = snirf.nirs(i).probe.(posField);
                         tmp3dfield = tmp3dfield(1:3,:);
                         snirf.nirs(i).probe.(posField) = tmp3dfield';

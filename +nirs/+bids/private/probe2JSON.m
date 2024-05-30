@@ -9,7 +9,7 @@ function probe2JSON(probe,filename)
 if(strcmp(class(probe),'nirs.core.Probe1020'))
     
     link=probe.link;
-    writetable(link,[filename '_channels.tsv'],'FileType','text','Delimiter','\t');
+    writetable(link,[filename + '_channels.tsv'],'FileType','text','Delimiter','\t');
     
     optodes=probe.optodes;
     optodes.name=optodes.Name; optodes.Name=[];
@@ -18,7 +18,7 @@ if(strcmp(class(probe),'nirs.core.Probe1020'))
     optodes.y=optodes.Y; optodes.Y=[];
     optodes.z=optodes.Z; optodes.Z=[];
     optodes.units=optodes.Units; optodes.Units=[];
-    writetable(optodes,[filename '_optodes2D.tsv'],'FileType','text','Delimiter','\t');
+    writetable(optodes,[filename + '_optodes2D.tsv'],'FileType','text','Delimiter','\t');
 
     optodes=probe.optodes_registered;
     optodes.name=optodes.Name; optodes.Name=[];
@@ -28,12 +28,12 @@ if(strcmp(class(probe),'nirs.core.Probe1020'))
     optodes.z=optodes.Z; optodes.Z=[];
     optodes.units=optodes.Units; optodes.Units=[];
     
-    writetable(optodes,[filename '_optodes.tsv'],'FileType','text','Delimiter','\t');
+    writetable(optodes,[filename + '_optodes.tsv'],'FileType','text','Delimiter','\t');
     
     mesh=probe.getmesh;
     fidc=mesh(1).fiducials;
     
-    fid=fopen([filename '_coordsystem.json'],'w');
+    fid=fopen([filename + '_coordsystem.json'],'w');
     
     fprintf(fid,'{\n');
     fprintf(fid,'\t"NIRSCoordinateSystem": "%s",\n','MNI');
@@ -62,7 +62,7 @@ elseif(strcmp(class(probe),'eeg.core.Probe'))
     electrodes.status=repmat({'unknown'},height(electrodes),1);
     electrodes.status_description=repmat({' '},height(electrodes),1);
     
-    writetable(electrodes,[filename '_channels.tsv'],'FileType','text','Delimiter','\t');   
+    writetable(electrodes,[filename + '_channels.tsv'],'FileType','text','Delimiter','\t');   
     
     
     electrodes=probe.electrodes;
@@ -70,12 +70,12 @@ elseif(strcmp(class(probe),'eeg.core.Probe'))
     electrodes.y=electrodes.Y; electrodes.Y=[];
     electrodes.z=electrodes.Z; electrodes.Z=[];
     electrodes.units=electrodes.Units; electrodes.Units=[];
-    writetable(electrodes,[filename '_electrodes.tsv'],'FileType','text','Delimiter','\t');
+    writetable(electrodes,[filename + '_electrodes.tsv'],'FileType','text','Delimiter','\t');
     
    
 else
     link=probe.link;
-    writetable(link,[filename '_channels.tsv'],'FileType','text','Delimiter','\t');
+    writetable(link,[filename + '_channels.tsv'],'FileType','text','Delimiter','\t');
     
     
     optodes=probe.optodes;
@@ -85,7 +85,7 @@ else
     optodes.y=optodes.Y; optodes.Y=[];
     optodes.z=optodes.Z; optodes.Z=[];
     optodes.units=optodes.Units; optodes.Units=[];
-    writetable(optodes,[filename '_optodes.tsv'],'FileType','text','Delimiter','\t');
+    writetable(optodes,[filename + '_optodes.tsv'],'FileType','text','Delimiter','\t');
     
 end
 

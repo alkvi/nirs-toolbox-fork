@@ -41,5 +41,5 @@ fprintf(fid,'\t"amplitude":{\n');
 fprintf(fid,'\t\t"description": "amplitude of event"}\n');
 fprintf(fid,'}');
 
-writetable(s,[filename(1:strfind(filename,'.json')-1) '.tsv'],...
+writetable(s,[extractBefore(filename, '.json') + '.tsv'],...
     'FileType','text','Delimiter','\t');

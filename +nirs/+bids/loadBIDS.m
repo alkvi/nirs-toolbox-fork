@@ -72,8 +72,10 @@ for i=1:length(json_files);
         lst=find(~ismember(tbl.(NewName),currect_demo.(NewName)));
         % If the name doesn't match the participants_id info
         for idx=1:length(lst)
-            file=strrep(snirf_files(lst(idx)).name,[folder filesep],'');
-            subjid=file(1:min(strfind(file,filesep))-1);
+            [snirf_filepath,name,snirf_extension] = fileparts(snirf_files(lst(idx)).name)
+            name_parts = split(name,'_')
+            sub_part = name_parts{1}
+            subjid = sub_part(5:end)
             data(lst(idx)).demographics(NewName)=subjid;
         end
 

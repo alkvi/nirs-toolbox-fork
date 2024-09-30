@@ -38,6 +38,7 @@ classdef ChannelStats
         probe           % Probe object describing measurement geometry
         demographics    % Dictionary containing demographics info
         basis           % basis set info used to create model
+        yf              % filtered data
     end
     
     properties ( Dependent = true )

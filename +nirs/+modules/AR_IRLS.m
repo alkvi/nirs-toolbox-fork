@@ -210,6 +210,7 @@ classdef AR_IRLS < nirs.modules.AbstractGLM
                 S(i).covb = covb;
                 
                 S(i).dfe  = stats.dfe(1);
+                S(i).yf = stats.yf;
                 
                 S(i).description = data(i).description;
                 

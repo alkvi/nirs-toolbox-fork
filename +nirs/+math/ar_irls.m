@@ -175,9 +175,8 @@ function [stats,resid] = ar_irls( d,X,Pmax,tune,nosearch,useGPU, singlePrecision
        
        % stats.dfe = length(yf)-sum(U(:).*U(:));
         stats.dfe = sum(S.w)-sum(U(:).*U(:));
-        
-        
-        
+        all_yf(i,:) = yf;
+
         % note trace(A*B) = sum(reshape(A,[],1).*reshape(B',[],1)); 
         
 
@@ -295,6 +294,8 @@ function [stats,resid] = ar_irls( d,X,Pmax,tune,nosearch,useGPU, singlePrecision
         end
     end
     covb=covb/2;
+
+    stats.yf = all_yf;
 
     
 %     

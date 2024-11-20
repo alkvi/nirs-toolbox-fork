@@ -211,6 +211,10 @@ classdef AR_IRLS < nirs.modules.AbstractGLM
                 
                 S(i).dfe  = stats.dfe(1);
                 S(i).yf = stats.yf;
+                S(i).X = stats.X;
+                S(i).Xf = stats.Xf;
+                S(i).nonss = stats.nonss;
+                S(i).all_hrf_recreated = stats.all_hrf_recreated;
                 
                 S(i).description = data(i).description;
                 

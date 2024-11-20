@@ -156,6 +156,7 @@ function [stats,resid] = ar_irls( d,X,Pmax,tune,nosearch,useGPU, singlePrecision
             yf = myFilter(f,y);
             end
             % perform IRLS
+
             [B, S] = nirs.math.robustfit(Xf(lstValid,:),yf(lstValid),'bisquare',tune,'off');
             
             iter = iter + 1;
@@ -176,6 +177,11 @@ function [stats,resid] = ar_irls( d,X,Pmax,tune,nosearch,useGPU, singlePrecision
        % stats.dfe = length(yf)-sum(U(:).*U(:));
         stats.dfe = sum(S.w)-sum(U(:).*U(:));
         all_yf(i,:) = yf;
+        %all_X(i,:) = X(:,1) + X(:,2) + X(:,3);
+        all_X(i,:) = X(:,1:3)*B(1:3);
+        all_Xf(i,:) = Xf(:,1) + Xf(:,2) + Xf(:,3);
+        all_nonss(i,:) = yf - Xf(:,4:12)*B(4:12);
+        all_hrf_recreated(i,:) = Xf(:,1:3)*B(1:3);
 
         % note trace(A*B) = sum(reshape(A,[],1).*reshape(B',[],1)); 
         
@@ -296,6 +302,10 @@ function [stats,resid] = ar_irls( d,X,Pmax,tune,nosearch,useGPU, singlePrecision
     covb=covb/2;
 
     stats.yf = all_yf;
+    stats.X = all_X;
+    stats.Xf = all_Xf;
+    stats.nonss = all_nonss;
+    stats.all_hrf_recreated = all_hrf_recreated;
 
     
 %     

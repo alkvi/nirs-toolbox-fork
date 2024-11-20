@@ -39,6 +39,10 @@ classdef ChannelStats
         demographics    % Dictionary containing demographics info
         basis           % basis set info used to create model
         yf              % filtered data
+        X               % design matrix
+        Xf              % filtered design matrix
+        nonss           % data minus short channels regr. out
+        all_hrf_recreated % recreated HRF for channel
     end
     
     properties ( Dependent = true )

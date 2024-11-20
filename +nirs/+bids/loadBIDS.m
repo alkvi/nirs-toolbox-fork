@@ -86,6 +86,7 @@ for i=1:length(json_files);
             end
         end
     elseif(contains(json_files(i).name,'event'))
+        if any("name" == string(tbl.Properties.VariableNames))
          for id=1:length(snirf_files)
             if(contains(snirf_files(id).name,json_files(i).name(1:strfind(json_files(i).name,'_event'))))
 
@@ -115,6 +116,7 @@ for i=1:length(json_files);
             
             end
          end
+        end
     elseif(contains(json_files(i).name,'fnirs'))
          for id=1:length(snirf_files)
             if(contains(snirf_files(id).name,json_files(i).name(1:strfind(json_files(i).name,'_fnirs'))))

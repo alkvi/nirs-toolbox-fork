@@ -29,6 +29,7 @@ for i=1:length(snirf_files)
         else
             data(i,1)=nirs.io.loadSNIRF(snirf_files(i).name);
         end
+        data(i,1)=add_bids_subject(data(i,1), snirf_files(i).folder, verbose);
         data(i,1)=add_bids_session(data(i,1), snirf_files(i).folder, verbose);
     catch
         warning(['failed to load: ' snirf_files(i).name]);
@@ -192,5 +193,36 @@ session = extractAfter(session_folder, 'ses-');
 
 % add to demographics
 data.demographics('session') = session;
+
+end
+
+% Add session from BIDS structure to metadata
+function data = add_bids_subject(data, nirs_folder, verbose)
+
+% make sure we haven't already added a session
+if iskey(data.demographics, 'bids_subject')
+    return
+end
+
+% remove trailing file separator
+if nirs_folder(end) == filesep
+    nirs_folder = nirs_folder(1:end-1);
+end
+
+% validate folder name is according to BIDS spec
+folder_parts = strsplit(nirs_folder, filesep);
+session_folder = folder_parts{end-2};
+if ~startsWith(session_folder, 'sub-')
+    if(verbose)
+        disp(['Session folder does not look like BIDS format: ', session_folder]);
+    end
+    return
+end
+
+% grab session name
+session = extractAfter(session_folder, 'sub-');
+
+% add to demographics
+data.demographics('bids_subject') = session;
 
 end

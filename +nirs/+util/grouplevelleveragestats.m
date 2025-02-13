@@ -127,6 +127,43 @@ vars(idx,:) = vars;
 X(idx, :)   = X;
 beta        = b; % already in correct order
 
+[i,j]=find(isnan(X));
+lst=find(~ismember(1:size(X,1),unique(i)));
+if(rank(full(X(lst,:)))<size(X,2))
+	warning('Model is unstable');
+end
+X = X(lst,:);
+W = W(lst,lst);
+vars = vars(lst,:);
+
+[i,j]=find(isnan(W));
+lst=find(~ismember(1:size(W,1),unique(i)));
+if(rank(full(W(lst,:)))<size(W,2))
+	warning('Model is unstable');
+end
+X = X(lst,:);
+W = W(lst,lst);
+vars = vars(lst,:);
+
+% Check for NaN or Inf values
+if any(isnan(X(:)))
+    disp('Matrix X contains NaN values.');
+elseif any(isinf(X(:)))
+    disp('Matrix X contains Inf values.');
+else
+    disp('Matrix X does not contain NaN or Inf values.');
+end
+
+% Calculate the condition number using SVD
+[U, S, V] = svd(full(X));
+singular_values = diag(S);
+condition_number = max(singular_values) / min(singular_values);
+disp(['Condition number of matrix X (using SVD): ', num2str(condition_number)]);
+if condition_number > 1e10 % Threshold for numerical instability
+    disp('Matrix X is ill-conditioned or nearly singular.');
+else
+    disp('Matrix X is well-conditioned.');
+end
 
 R = qr(X,0);
 E = X/R;

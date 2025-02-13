@@ -1,4 +1,4 @@
-function data = loadSNIRF(filename,verbose)
+function data = loadSNIRF(filename,verbose,probe)
 % this function reads in a nir5 (hdf5) formated data file
 
 if(nargin<2)

@@ -27,9 +27,9 @@ for i=1:length(snirf_files)
     end
     try
         if custom_probe
-            data(i,1)=nirs.io.loadSNIRF(snirf_files(i).name, probe);
+            data(i,1)=nirs.io.loadSNIRF(snirf_files(i).name, verbose, probe);
         else
-            data(i,1)=nirs.io.loadSNIRF(snirf_files(i).name);
+            data(i,1)=nirs.io.loadSNIRF(snirf_files(i).name, verbose);
         end
         data(i,1)=add_bids_session(data(i,1), snirf_files(i).folder, verbose);
     catch

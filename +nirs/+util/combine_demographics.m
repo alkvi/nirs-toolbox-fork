@@ -10,6 +10,7 @@ for i=1:length(flds)
     end
 end
 
-
-
+try
+    included_subjects_n = length(unique(demoOrig.SubjectID));
+    demo.included_subjects_n = included_subjects_n;
 end

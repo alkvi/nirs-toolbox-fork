@@ -50,6 +50,7 @@ switch class(stats)
             
             xdata = stats.Variables.(xvar)(inds);
             ydata = stats.Variables.(yvar)(inds);
+            weights = weights(inds);
             
             xdist = max(xdata)-min(xdata);
             xlim = [min(xdata)-2*xdist max(xdata)+2*xdist];

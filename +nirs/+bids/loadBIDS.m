@@ -98,6 +98,7 @@ for i=1:length(json_files)
             end
         end
     elseif(contains(json_files(i).name,'event'))
+        try
          for id=1:length(snirf_files)
             if(contains(snirf_files(id).name,json_files(i).name(1:strfind(json_files(i).name,'_event'))))
 
@@ -127,6 +128,10 @@ for i=1:length(json_files)
             
             end
          end
+        catch
+            disp("Unable to parse event file");
+        end
+        
     elseif(contains(json_files(i).name,'fnirs'))
          for id=1:length(snirf_files)
             if(contains(snirf_files(id).name,json_files(i).name(1:strfind(json_files(i).name,'_fnirs'))))

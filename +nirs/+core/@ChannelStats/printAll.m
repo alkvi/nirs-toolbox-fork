@@ -59,7 +59,7 @@ function printAll( obj, vtype, vrange, thresh, folder, ext, conditionNames )
             end
             
             fname = [conditionNames{i} '_' utypes{j} '.' ext];
-            fname = [folder filesep strjoin(strsplit(fname, ':'), '__')];
+            fname = strcat(folder, filesep, strjoin(strsplit(fname, ':'), '__'));
             print(f,ptype, fname)
             
             close(f);

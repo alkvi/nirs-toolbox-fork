@@ -43,7 +43,7 @@ classdef ShortDistanceFilter < nirs.modules.AbstractModule
                     end
                     
                 else
-                    channelLst=find(data(i).probe.link.ShortSeperation);
+                    channelLst=find(data(i).probe.link.ShortSeperation == 1 & data(i).probe.link.bad == 0);
                     lst=find(~data(i).probe.link.ShortSeperation);
                     d = data(i).data;
                     

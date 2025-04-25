@@ -38,6 +38,8 @@ classdef ChannelStats
         probe           % Probe object describing measurement geometry
         demographics    % Dictionary containing demographics info
         basis           % basis set info used to create model
+        lm_anova        % ADDED: anova result for model test
+        lm_rsq          % ADDED: rsquared from fitted model
     end
     
     properties ( Dependent = true )

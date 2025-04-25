@@ -319,6 +319,34 @@ classdef MixedEffects < nirs.modules.AbstractModule
             % this gives the same results as the built in matlab code,
             % however, mine is MUCH faster (at N=22; mine=18s vs matlab=>160s 
             % lme2=fitlmematrix(full(X(:,lstKeep)),beta,Z,[],'dummyVarCoding',obj.dummyCoding, 'FitMethod', 'ML', 'CovariancePattern', repmat({'Isotropic'},nRE,1));
+            
+            % ADDED: let's fit an lm to check model stats (equivalent when
+            % no RFX in LME)
+            Xfull = full(X);
+            numCols = size(X, 2);
+            colNames = arrayfun(@(x) sprintf('x%d', x), 1:numCols, 'UniformOutput', false);
+            mytbl = array2table([Xfull(:, lstKeep), beta], 'VariableNames', [colNames(lstKeep), {'Response'}]);
+            concatenatedString = strjoin(colNames, ' + ');
+            model_string = ['Response ~ -1 + ', concatenatedString];
+            lm = fitlm(mytbl, model_string);
+
+            % Make sure the resulting coefficients are the same as 
+            % nirs.math.fitlme output
+            modelCoefficients = lm.Coefficients.Estimate;
+            tolerance = 0.00001;
+            approxEqualIndices = abs(Coef - modelCoefficients) <= tolerance;
+            notApproxEqualIndices = find(approxEqualIndices == 0);
+            
+            if ~isempty(notApproxEqualIndices)
+                disp('WARN: There are differences between Coef and lm.Coefficients.Estimate.');
+                pause;
+            else
+                disp('All elements in Coef are equal to lm.Coefficients.Estimate.');
+            end
+
+            % Get model statistics
+            anovaResults = anova(lm, 'summary');
+    
             [ii,jj]=find(isnan(X(:,lstKeep)));
             ii=unique(ii);
             w2=w; w2(ii)=[]; X2=X(:,lstKeep); X2(ii,:)=[];
@@ -365,6 +393,10 @@ classdef MixedEffects < nirs.modules.AbstractModule
             %% output
             G.beta=nan(size(X,2),1);
             G.covb=1E6*eye(size(X,2)); %make sure anything not fit will have high variance
+
+            % ADDED: anova and rsquared
+            G.lm_anova = anovaResults;
+            G.lm_rsq = lm.Rsquared;
             
             G.beta(lstKeep) = Coef;
             %G.beta(end+1)=ra;  

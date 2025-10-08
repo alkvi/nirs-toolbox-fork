@@ -1,4 +1,4 @@
-function data = loadBIDS(folder,verbose,probe)
+function data = loadBIDS(folder,verbose,legacy,probe)
 
 if(nargin<2)
     verbose=true;
@@ -14,6 +14,10 @@ else
     custom_probe=true;
 end
 
+if(nargin<4)
+    legacy=false;
+end
+
 % Get a list of every snirf  file
 snirf_files = rdir(fullfile(folder,'**','*.snirf'));
 if(verbose)
@@ -27,9 +31,9 @@ for i=1:length(snirf_files)
     end
     try
         if custom_probe
-            data(i,1)=nirs.io.loadSNIRF(snirf_files(i).name, verbose, false, probe);
+            data(i,1)=nirs.io.loadSNIRF(snirf_files(i).name, verbose, legacy, probe);
         else
-            data(i,1)=nirs.io.loadSNIRF(snirf_files(i).name, verbose, false);
+            data(i,1)=nirs.io.loadSNIRF(snirf_files(i).name, verbose, legacy);
         end
         data(i,1)=add_bids_session(data(i,1), snirf_files(i).folder, verbose);
     catch

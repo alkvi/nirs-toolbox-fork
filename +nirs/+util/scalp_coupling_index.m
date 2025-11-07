@@ -1,4 +1,4 @@
-function tbl=scalp_coupling_index(data,bandpass,legacy);
+function tbl=scalp_coupling_index(data,bandpass,legacy, window);
 %  This computes the "scalp coupling index" over the whole file based on the model in
 %  Pollonini L, Bortfeld H, Oghalai JS. PHOEBE: a method for real time mapping of optodes-scalp coupling in functional 
 %  near-infrared spectroscopy. Biomed Opt Express. 2016;7(12):5104-5119. Published 2016 Nov 15. doi:10.1364/BOE.7.005104
@@ -32,6 +32,11 @@ sci=zeros(height(link),1);
 power=zeros(height(link),1);
 fpower=zeros(height(link),1);
 
+window_samples = floor(window*fs);
+n_samples = round(size(data.data,1)*0.90);
+n_windows = floor((n_samples)/(window_samples));
+power_array_window = nan(height(link), n_windows);
+
 for i=1:height(link)
     lst=find(idx==i);
     nirs_data1=data.data(:,lst(1));
@@ -61,6 +66,24 @@ for i=1:height(link)
     sci(i)=similarity(length(filtered_nirs_data1));
     power(i)=pwrest;
     fpower(i)=f(j);    
+
+    % EDIT: time windows
+    for current_window = 1:n_windows
+         
+        interval = (current_window-1)*window_samples+1 : current_window*window_samples;
+        filtered_nirs_data1_window = filtered_nirs_data1(interval,:);
+        filtered_nirs_data2_window = filtered_nirs_data1(interval,:);
+
+        similarity = xcorr(filtered_nirs_data1_window,filtered_nirs_data2_window,'unbiased');  %cross-correlate the two wavelength signals - both should have cardiac pulsations
+        similarity = length(filtered_nirs_data1_window)*similarity./sqrt(sum(abs(filtered_nirs_data1_window).^2)*sum(abs(filtered_nirs_data2_window).^2));  % this makes the SCI=1 at lag zero when x1=x2 AND makes the power estimate independent of signal length, amplitude and Fs
+        [pxx,f] = periodogram(similarity,hamming(length(similarity)),length(similarity),fs,'power');
+        [pwrest,pwrestidx] = max(pxx(f<1.7)); % FIX Make it age-dependent
+        power_array_window(i,current_window) = pwrest;
+    end
+    
+    power(i) = mean(power_array_window(i,:));
+
+    
 end
 
 

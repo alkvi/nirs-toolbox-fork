@@ -9,14 +9,15 @@ if(verbose)
 end
 
 if(nargin<3)
+    legacy=false;
+end
+
+if(nargin<4)
     custom_probe=false;
 else
     custom_probe=true;
 end
 
-if(nargin<4)
-    legacy=false;
-end
 
 % Get a list of every snirf  file
 snirf_files = rdir(fullfile(folder,'**','*.snirf'));
